@@ -8,6 +8,7 @@ A reproducible development environment using Nix flakes with Supabase, Vercel, a
 
 - Nix with flakes enabled ([Installation guide](https://nixos.org/download.html))
 - macOS, Linux, or NixOS
+- **Optional:** Docker Desktop (only needed for local Supabase development)
 
 ### Usage
 ```bash
@@ -45,10 +46,12 @@ After entering the environment with `nix develop`:
 - `setup-github` - Configure GitHub only
 
 ### Development Commands
-- `supabase-dev` - Start local Supabase instance
+- `supabase-dev` - Start local Supabase instance (requires Docker)
 - `supabase-stop` - Stop local Supabase
 - `vercel dev` - Start Vercel development server
 - `deploy` - Deploy to Vercel production
+
+> **Note:** Docker is only required for local Supabase development. You can use your cloud Supabase project without Docker by connecting via environment variables.
 
 ## 🎯 Use Cases
 

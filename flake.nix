@@ -13,7 +13,7 @@
       in
       {
         devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
+          packages = with pkgs; [
             # Core CLIs
             supabase-cli
             nodePackages.vercel
@@ -24,10 +24,6 @@
             git
             jq
             curl
-            
-            # macOS-specific (if needed)
-          ] ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
-            pkgs.darwin.apple_sdk.frameworks.Security
           ];
 
           shellHook = ''

@@ -2,6 +2,19 @@
 
 set -e
 
+# Check if vercel command is available
+if ! command -v vercel &> /dev/null; then
+    echo "❌ Error: 'vercel' command not found"
+    echo ""
+    echo "This script must be run from within the Nix development environment."
+    echo ""
+    echo "To fix this:"
+    echo "  1. Run 'nix develop' to enter the development environment"
+    echo "  2. Then run 'setup-vercel' (or './setup-scripts/vercel-init.sh')"
+    echo ""
+    exit 1
+fi
+
 echo "🔺 Setting up Vercel CLI..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
