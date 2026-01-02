@@ -97,7 +97,11 @@
               bash ${./setup-scripts/frontend-init.sh}
             }
 
-            export -f setup-all setup-supabase setup-vercel setup-github setup-frontend
+            verify-edge-function() {
+              bash ${./scripts/verify-edge-function.sh}
+            }
+
+            export -f setup-all setup-supabase setup-vercel setup-github setup-frontend verify-edge-function
 
             # Convenient aliases
             alias supabase-dev="supabase start"
@@ -111,6 +115,7 @@
             echo "  setup-vercel     : Run Vercel setup only"
             echo "  setup-github     : Run GitHub setup only"
             echo "  setup-frontend   : Initialize frontend project"
+            echo "  verify-edge-function : Verify edge function structure"
             echo ""
             echo "  supabase-dev     : Start local Supabase"
             echo "  supabase-stop    : Stop local Supabase"
