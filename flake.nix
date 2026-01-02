@@ -49,7 +49,7 @@
               echo -e "''${YELLOW}📋 First-time setup detected!''${NC}"
               echo ""
               
-              read -p "Run interactive setup for Supabase, Vercel, and GitHub? (Y/n): " RUN_SETUP
+              read -p "Run interactive setup for Supabase, Vercel, GitHub, and Frontend? (Y/n): " RUN_SETUP
               RUN_SETUP=''${RUN_SETUP:-Y}
               
               if [[ $RUN_SETUP =~ ^[Yy]$ ]]; then
@@ -60,6 +60,8 @@
                 bash ${./setup-scripts/vercel-init.sh}
                 echo ""
                 bash ${./setup-scripts/github-init.sh}
+                echo ""
+                bash ${./setup-scripts/frontend-init.sh}
                 
                 # Mark as initialized
                 touch "$FIRST_TIME_FILE"
@@ -91,7 +93,11 @@
               bash ${./setup-scripts/github-init.sh}
             }
 
-            export -f setup-all setup-supabase setup-vercel setup-github
+            setup-frontend() {
+              bash ${./setup-scripts/frontend-init.sh}
+            }
+
+            export -f setup-all setup-supabase setup-vercel setup-github setup-frontend
 
             # Convenient aliases
             alias supabase-dev="supabase start"
@@ -104,6 +110,7 @@
             echo "  setup-supabase   : Run Supabase setup only"
             echo "  setup-vercel     : Run Vercel setup only"
             echo "  setup-github     : Run GitHub setup only"
+            echo "  setup-frontend   : Initialize frontend project"
             echo ""
             echo "  supabase-dev     : Start local Supabase"
             echo "  supabase-stop    : Stop local Supabase"

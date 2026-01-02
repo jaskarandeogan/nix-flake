@@ -1,91 +1,73 @@
-# Development Environment Starter
+# React + TypeScript + Vite
 
-A reproducible development environment using Nix flakes with Supabase, Vercel, and GitHub CLI pre-configured.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## 🚀 Quick Start
+Currently, two official plugins are available:
 
-### Prerequisites
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-- Nix with flakes enabled ([Installation guide](https://nixos.org/download.html))
-- macOS, Linux, or NixOS
-- **Optional:** Docker Desktop (only needed for local Supabase development)
+## React Compiler
 
-### Usage
-```bash
-# Create a new project
-mkdir my-app && cd my-app
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-# Initialize from this template
-nix flake init -t github:yourusername/nixos-dev-starter
+## Expanding the ESLint configuration
 
-# Enter development environment
-nix develop
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
 
-On first run, you'll be prompted to set up:
-- ✅ Supabase CLI (authentication + project)
-- ✅ Vercel CLI (authentication + project)
-- ✅ GitHub CLI (authentication + repository)
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-## 📦 What's Included
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
-- **Supabase CLI** - Local database & cloud project management
-- **Vercel CLI** - Deployment and preview environments
-- **GitHub CLI** - Repository and PR management
-- **Node.js 20** - Modern JavaScript runtime
-- **Git, jq, curl** - Essential development tools
-
-## 🛠️ Available Commands
-
-After entering the environment with `nix develop`:
-
-### Setup Commands
-- `setup-all` - Re-run all setup scripts
-- `setup-supabase` - Configure Supabase only
-- `setup-vercel` - Configure Vercel only
-- `setup-github` - Configure GitHub only
-
-### Development Commands
-- `supabase-dev` - Start local Supabase instance (requires Docker)
-- `supabase-stop` - Stop local Supabase
-- `vercel dev` - Start Vercel development server
-- `deploy` - Deploy to Vercel production
-
-> **Note:** Docker is only required for local Supabase development. You can use your cloud Supabase project without Docker by connecting via environment variables.
-
-## 🎯 Use Cases
-
-Perfect for:
-- Full-stack apps with Supabase backend
-- Next.js/React projects deploying to Vercel
-- Projects using Kiro, Claude Code, or Cursor
-- Team collaboration with reproducible environments
-
-## 🔧 Customization
-
-Edit `flake.nix` to add more tools:
-```nix
-buildInputs = with pkgs; [
-  # Add your tools here
-  python3
-  postgresql
-  redis
-];
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
-
-## 📝 Environment Variables
-
-Create a `.env` file for your project-specific variables:
-```bash
-SUPABASE_URL=your-project-url
-SUPABASE_ANON_KEY=your-anon-key
-VERCEL_PROJECT_ID=your-project-id
-```
-
-## 🤝 Contributing
-
-Feel free to submit issues and PRs!
-
-## 📄 License
-
-MIT
