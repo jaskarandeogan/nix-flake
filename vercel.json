@@ -4,8 +4,7 @@
   "installCommand": "yarn install",
   "framework": "vite",
   "dev": {
-    "port": 5173,
-    "timeout": 60000
+    "port": 5173
   }
 }
 

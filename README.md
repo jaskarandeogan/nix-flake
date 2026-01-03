@@ -24,7 +24,7 @@ On first run, you'll be prompted to set up:
 - ✅ Supabase CLI (authentication + project)
 - ✅ Vercel CLI (authentication + project)
 - ✅ GitHub CLI (authentication + repository)
-- ✅ Frontend project (React + Supabase starter, Next.js, or Vite)
+- ✅ Frontend dependencies (this repo already includes React + Vite + Supabase frontend code)
 
 ### Setting Up Environment Variables
 
@@ -81,7 +81,7 @@ After entering the environment with `nix develop`:
 - `setup-supabase` - Configure Supabase only
 - `setup-vercel` - Configure Vercel only
 - `setup-github` - Configure GitHub only
-- `setup-frontend` - Initialize frontend project (React + Supabase starter, Next.js, or Vite)
+- `setup-frontend` - Verify frontend setup (dependencies, .env file) (React + Supabase starter, Next.js, or Vite)
 
 ### Development Commands
 - `supabase-dev` - Start local Supabase instance (requires Docker)
@@ -91,27 +91,21 @@ After entering the environment with `nix develop`:
 
 > **Note:** Docker is only required for local Supabase development. You can use your cloud Supabase project without Docker by connecting via environment variables.
 
-## ⚛️ Frontend Frameworks
+## ⚛️ Frontend
 
-The `setup-frontend` command supports:
-- **React + Supabase Starter (ConsentKeys)** - Custom starter template with React and Supabase pre-configured
-- **Next.js (App Router)** - Recommended for Vercel + Supabase
-- **Next.js (Pages Router)** - Classic Next.js structure
-- **Vite + React** - Fast development with React
-- **Vite + React + TypeScript** - Type-safe React development
+This repository **already includes** a complete React + Vite + TypeScript frontend with:
+- ✅ Pre-configured Supabase integration
+- ✅ ConsentKeys OAuth authentication flow
+- ✅ Protected routes and auth context
+- ✅ Environment variable configuration
+- ✅ Ready-to-use project structure
 
-The ConsentKeys React + Supabase starter includes:
-- Pre-configured Supabase integration
-- React setup with best practices
-- Environment variable configuration
-- Ready-to-use project structure
+The `setup-frontend` command will:
+- Check that dependencies are installed
+- Help create `.env` file from `.env.example`
+- Verify the frontend is ready to use
 
-Other templates include:
-- TypeScript support (where applicable)
-- Tailwind CSS (Next.js templates)
-- ESLint configuration
-- Supabase client library installation option
-- `.env.example` file with Supabase variables
+**Note:** If you want to use a different framework (Next.js, etc.), you can manually initialize it, but the existing React + Vite setup is ready to go.
 
 ## 🎯 Use Cases
 

@@ -62,6 +62,7 @@
                 echo ""
                 bash ${./setup-scripts/github-init.sh}
                 echo ""
+                # Frontend code already exists in this repo, so setup is optional
                 bash ${./setup-scripts/frontend-init.sh}
                 
                 # Install dependencies if package.json exists

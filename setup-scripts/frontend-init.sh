@@ -2,24 +2,54 @@
 
 set -e
 
-echo "⚛️  Setting up Frontend Project..."
+echo "⚛️  Frontend Project Setup..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-# Check if frontend already exists
-if [ -f "package.json" ] || [ -f "next.config.js" ] || [ -f "next.config.ts" ] || [ -f "vite.config.js" ] || [ -f "vite.config.ts" ]; then
-    echo "📁 Frontend project already detected in this directory"
+# Check if frontend already exists (this repo already contains frontend code)
+if [ -f "package.json" ] || [ -f "vite.config.ts" ] || [ -f "vite.config.js" ] || [ -f "next.config.js" ] || [ -f "next.config.ts" ]; then
+    echo "📁 Frontend project already exists in this directory"
     
     if [ -f "package.json" ]; then
         PROJECT_NAME=$(cat package.json | grep -o '"name":"[^"]*"' | cut -d'"' -f4 || echo "unknown")
         echo "   Project: $PROJECT_NAME"
     fi
     
-    read -p "   Initialize a new frontend project anyway? (y/N): " INIT_ANYWAY
-    if [[ ! $INIT_ANYWAY =~ ^[Yy]$ ]]; then
-        echo "💡 Skipped. Using existing frontend project"
-        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        exit 0
+    echo ""
+    echo "This repository already includes a React + Vite + Supabase frontend."
+    echo "The frontend code is ready to use - just ensure dependencies are installed."
+    echo ""
+    
+    # Check if node_modules exists
+    if [ ! -d "node_modules" ]; then
+        echo "📦 Dependencies not installed yet."
+        echo "   They will be installed automatically after setup completes."
+    else
+        echo "✅ Dependencies already installed"
     fi
+    
+    # Check for .env file
+    if [ ! -f ".env" ] && [ ! -f ".env.local" ]; then
+        if [ -f ".env.example" ]; then
+            echo ""
+            read -p "Create .env file from .env.example? (Y/n): " CREATE_ENV
+            CREATE_ENV=${CREATE_ENV:-Y}
+            if [[ $CREATE_ENV =~ ^[Yy]$ ]]; then
+                cp .env.example .env
+                echo "✅ Created .env file - remember to fill in your values!"
+            fi
+        fi
+    fi
+    
+    echo ""
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "✅ Frontend is ready!"
+    echo ""
+    echo "Next steps:"
+    echo "  • Fill in your .env file with Supabase credentials"
+    echo "  • Run 'yarn dev' to start development server"
+    echo "  • Run 'vercel dev' to start with Vercel integration"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    exit 0
 fi
 
 echo ""
