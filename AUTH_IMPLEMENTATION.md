@@ -58,7 +58,7 @@ The authentication flow bypasses Supabase's built-in OAuth providers and uses a 
 ### Step 1: Install Dependencies
 
 ```bash
-npm install @supabase/supabase-js react-router-dom
+yarn add @supabase/supabase-js react-router-dom
 ```
 
 ### Step 2: Configure Environment Variables
@@ -271,12 +271,12 @@ verify_jwt = false
 
 ### Step 4: Set Environment Variables
 
-In Supabase Dashboard → Edge Functions → Secrets:
+**Note:** `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are automatically available in Supabase Edge Functions and don't need to be set manually.
 
-- `SUPABASE_URL`: Your Supabase project URL
-- `SUPABASE_SERVICE_ROLE_KEY`: Service role key (from API settings)
-- `CONSENT_KEYS_TOKEN_URL`: Token endpoint URL
-- `CONSENT_KEYS_USERINFO_URL`: Userinfo endpoint URL
+In Supabase Dashboard → Edge Functions → Secrets, set only:
+
+- `CONSENT_KEYS_TOKEN_URL`: Token endpoint URL (`https://api.pseudoidc.consentkeys.com/token`)
+- `CONSENT_KEYS_USERINFO_URL`: Userinfo endpoint URL (`https://api.pseudoidc.consentkeys.com/userinfo`)
 - `CONSENT_KEYS_CLIENT_ID`: OAuth client ID
 - `CONSENT_KEYS_CLIENT_SECRET`: OAuth client secret
 - `APP_URL`: Frontend callback URL (`http://localhost:5173/auth/callback`)
@@ -305,15 +305,20 @@ Or use Supabase Dashboard to deploy.
 
 ### Edge Function Environment Variables
 
-| Variable | Description |
-|----------|-------------|
-| `SUPABASE_URL` | Supabase project URL |
-| `SUPABASE_SERVICE_ROLE_KEY` | Service role key (admin access) |
-| `CONSENT_KEYS_TOKEN_URL` | Token exchange endpoint |
-| `CONSENT_KEYS_USERINFO_URL` | User info endpoint |
-| `CONSENT_KEYS_CLIENT_ID` | OAuth client ID |
-| `CONSENT_KEYS_CLIENT_SECRET` | OAuth client secret |
-| `APP_URL` | Frontend callback URL |
+| Variable | Description | Auto-provided? |
+|----------|-------------|----------------|
+| `SUPABASE_URL` | Supabase project URL | ✅ Yes (automatic) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Service role key (admin access) | ✅ Yes (automatic) |
+| `CONSENT_KEYS_TOKEN_URL` | Token exchange endpoint | ❌ No (set manually) |
+| `CONSENT_KEYS_USERINFO_URL` | User info endpoint | ❌ No (set manually) |
+| `CONSENT_KEYS_CLIENT_ID` | OAuth client ID | ❌ No (set manually) |
+| `CONSENT_KEYS_CLIENT_SECRET` | OAuth client secret | ❌ No (set manually) |
+| `APP_URL` | Frontend callback URL | ❌ No (set manually) |
+
+**ConsentKeys OIDC Endpoints:**
+- Token: `https://api.pseudoidc.consentkeys.com/token`
+- UserInfo: `https://api.pseudoidc.consentkeys.com/userinfo`
+- Authorization: `https://api.pseudoidc.consentkeys.com/auth`
 
 ---
 

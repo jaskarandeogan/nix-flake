@@ -77,12 +77,12 @@ Before deploying, verify:
 
 ## Environment Variables Required
 
-Make sure these are set in Supabase Dashboard → Edge Functions → Secrets:
+**Note:** `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are automatically provided by Supabase and don't need to be set manually.
 
-- `SUPABASE_URL` - Your Supabase project URL
-- `SUPABASE_SERVICE_ROLE_KEY` - Service role key (from API settings)
-- `CONSENT_KEYS_TOKEN_URL` - Token exchange endpoint
-- `CONSENT_KEYS_USERINFO_URL` - User info endpoint
+Set these in Supabase Dashboard → Edge Functions → Secrets:
+
+- `CONSENT_KEYS_TOKEN_URL` - Token exchange endpoint (`https://api.pseudoidc.consentkeys.com/token`)
+- `CONSENT_KEYS_USERINFO_URL` - User info endpoint (`https://api.pseudoidc.consentkeys.com/userinfo`)
 - `CONSENT_KEYS_CLIENT_ID` - OAuth client ID
 - `CONSENT_KEYS_CLIENT_SECRET` - OAuth client secret
 - `APP_URL` - Frontend callback URL (e.g., `http://localhost:5173/auth/callback`)

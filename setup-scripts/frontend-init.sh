@@ -160,10 +160,10 @@ esac
 
 echo ""
 
-# Install dependencies if package.json exists
+# Note: Dependencies will be installed automatically after setup completes
+# This is handled in flake.nix shellHook to ensure yarn is available
 if [ -f "package.json" ]; then
-    echo "📦 Installing dependencies..."
-    npm install
+    echo "📦 Dependencies will be installed automatically after setup"
     
     # Install Supabase client if not already installed
     if ! grep -q "@supabase/supabase-js" package.json; then
@@ -172,7 +172,13 @@ if [ -f "package.json" ]; then
         INSTALL_SUPABASE=${INSTALL_SUPABASE:-Y}
         
         if [[ $INSTALL_SUPABASE =~ ^[Yy]$ ]]; then
-            npm install @supabase/supabase-js
+            if command -v yarn &> /dev/null; then
+                yarn add @supabase/supabase-js
+            elif command -v npm &> /dev/null; then
+                npm install @supabase/supabase-js
+            else
+                echo "⚠️  No package manager found. Install dependencies manually later."
+            fi
             echo "✅ Supabase client installed"
         fi
     fi
@@ -231,9 +237,9 @@ echo ""
 echo "Next steps:"
 echo "  • Fill in your .env file with Supabase credentials"
 if [ "$FRAMEWORK_CHOICE" = "1" ]; then
-    echo "  • Check package.json for available scripts (usually 'npm start' or 'npm run dev')"
+    echo "  • Check package.json for available scripts (usually 'yarn start' or 'yarn dev')"
 else
-    echo "  • Run 'npm run dev' to start development server"
+    echo "  • Run 'yarn dev' to start development server"
 fi
 echo "  • Run 'vercel dev' to start with Vercel integration"
 echo "  • Run 'deploy' to deploy to production"

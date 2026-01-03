@@ -30,10 +30,11 @@ serve(async (req) => {
     const code = url.searchParams.get('code')
     if (!code) return new Response('Missing code', { status: 400, headers: corsHeaders })
 
-    const supabaseAdmin = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    )
+    // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are automatically provided by Supabase
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
 
     // Build redirect_uri to this function
     const redirectUri = `https://${(Deno.env.get('SUPABASE_URL') ?? '').replace('https://', '')}/functions/v1/consentkeys-callback`

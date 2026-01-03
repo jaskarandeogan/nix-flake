@@ -39,7 +39,7 @@ Then edit `.env` with your credentials:
 
 **Important:** Restart your dev server after updating `.env`:
 ```bash
-npm run dev
+yarn dev
 ```
 
 ## 🔄 Reproducibility

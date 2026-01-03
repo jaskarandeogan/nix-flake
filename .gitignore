@@ -16,6 +16,8 @@ node_modules
 dist
 dist-ssr
 *.local
+package-lock.json
+yarn-error.log
 
 # Logs
 logs
@@ -36,3 +38,4 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
+.vercel

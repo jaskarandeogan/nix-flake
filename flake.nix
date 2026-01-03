@@ -21,6 +21,7 @@
             
             # Supporting tools
             nodejs_20
+            yarn
             git
             jq
             curl
@@ -62,6 +63,19 @@
                 bash ${./setup-scripts/github-init.sh}
                 echo ""
                 bash ${./setup-scripts/frontend-init.sh}
+                
+                # Install dependencies if package.json exists
+                if [ -f "package.json" ]; then
+                  echo ""
+                  echo -e "''${YELLOW}📦 Installing project dependencies...''${NC}"
+                  if command -v yarn &> /dev/null; then
+                    yarn install
+                  elif command -v npm &> /dev/null; then
+                    npm install
+                  else
+                    echo -e "''${RED}⚠️  No package manager found. Install yarn or npm.''${NC}"
+                  fi
+                fi
                 
                 # Mark as initialized
                 touch "$FIRST_TIME_FILE"
@@ -107,6 +121,7 @@
             alias supabase-dev="supabase start"
             alias supabase-stop="supabase stop"
             alias deploy="vercel --prod"
+            alias dev="yarn dev"
 
             echo ""
             echo -e "''${BLUE}📦 Available commands:''${NC}"
@@ -119,7 +134,8 @@
             echo ""
             echo "  supabase-dev     : Start local Supabase"
             echo "  supabase-stop    : Stop local Supabase"
-            echo "  vercel dev       : Start Vercel dev server"
+            echo "  dev              : Start Vite dev server (recommended for local)"
+            echo "  vercel dev       : Start Vercel dev server (for Vercel features)"
             echo "  deploy           : Deploy to Vercel production"
             echo ""
             echo -e "''${GREEN}💡 Tip: Your environment is reproducible. Share this flake!''${NC}"

@@ -122,9 +122,10 @@ if [ -f "supabase/.temp/project-ref" ]; then
     
     if [[ $SETUP_SECRETS =~ ^[Yy]$ ]]; then
         echo ""
-        echo "You'll need the following values:"
-        echo "  • SUPABASE_URL (from your project settings)"
-        echo "  • SUPABASE_SERVICE_ROLE_KEY (from API settings)"
+        echo "Note: SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are automatically available"
+        echo "      in Supabase Edge Functions, so we'll skip those."
+        echo ""
+        echo "You'll need the following ConsentKeys values:"
         echo "  • CONSENT_KEYS_TOKEN_URL"
         echo "  • CONSENT_KEYS_USERINFO_URL"
         echo "  • CONSENT_KEYS_CLIENT_ID"
@@ -132,28 +133,15 @@ if [ -f "supabase/.temp/project-ref" ]; then
         echo "  • APP_URL (your frontend callback URL)"
         echo ""
         
-        # Get Supabase URL
-        read -p "Enter your Supabase project URL (e.g., https://xxx.supabase.co): " SUPABASE_URL
-        if [ -n "$SUPABASE_URL" ]; then
-            supabase secrets set SUPABASE_URL="$SUPABASE_URL" --project-ref "$PROJECT_REF" 2>/dev/null || echo "⚠️  Could not set SUPABASE_URL via CLI. Set it in Dashboard → Edge Functions → Secrets"
-        fi
+        # Get ConsentKeys URLs (using correct endpoints with https)
+        echo "ConsentKeys OIDC Endpoints:"
+        read -p "Enter ConsentKeys Token URL (default: https://api.pseudoidc.consentkeys.com/token): " TOKEN_URL
+        TOKEN_URL=${TOKEN_URL:-https://api.pseudoidc.consentkeys.com/token}
+        supabase secrets set CONSENT_KEYS_TOKEN_URL="$TOKEN_URL" --project-ref "$PROJECT_REF" 2>/dev/null || echo "⚠️  Could not set CONSENT_KEYS_TOKEN_URL via CLI. Set it in Dashboard → Edge Functions → Secrets"
         
-        # Get Service Role Key
-        echo ""
-        read -p "Enter your Supabase Service Role Key (from Settings → API): " SERVICE_KEY
-        if [ -n "$SERVICE_KEY" ]; then
-            supabase secrets set SUPABASE_SERVICE_ROLE_KEY="$SERVICE_KEY" --project-ref "$PROJECT_REF" 2>/dev/null || echo "⚠️  Could not set SUPABASE_SERVICE_ROLE_KEY via CLI. Set it in Dashboard → Edge Functions → Secrets"
-        fi
-        
-        # Get ConsentKeys URLs
-        echo ""
-        read -p "Enter ConsentKeys Token URL (default: https://pseudoidc.consentkeys.com:3000/token): " TOKEN_URL
-        TOKEN_URL=${TOKEN_URL:-https://pseudoidc.consentkeys.com:3000/token}
-        supabase secrets set CONSENT_KEYS_TOKEN_URL="$TOKEN_URL" --project-ref "$PROJECT_REF" 2>/dev/null || echo "⚠️  Could not set CONSENT_KEYS_TOKEN_URL via CLI"
-        
-        read -p "Enter ConsentKeys UserInfo URL (default: https://pseudoidc.consentkeys.com:3000/userinfo): " USERINFO_URL
-        USERINFO_URL=${USERINFO_URL:-https://pseudoidc.consentkeys.com:3000/userinfo}
-        supabase secrets set CONSENT_KEYS_USERINFO_URL="$USERINFO_URL" --project-ref "$PROJECT_REF" 2>/dev/null || echo "⚠️  Could not set CONSENT_KEYS_USERINFO_URL via CLI"
+        read -p "Enter ConsentKeys UserInfo URL (default: https://api.pseudoidc.consentkeys.com/userinfo): " USERINFO_URL
+        USERINFO_URL=${USERINFO_URL:-https://api.pseudoidc.consentkeys.com/userinfo}
+        supabase secrets set CONSENT_KEYS_USERINFO_URL="$USERINFO_URL" --project-ref "$PROJECT_REF" 2>/dev/null || echo "⚠️  Could not set CONSENT_KEYS_USERINFO_URL via CLI. Set it in Dashboard → Edge Functions → Secrets"
         
         # Get Client Credentials
         echo ""

@@ -17,6 +17,12 @@ export function AuthCallback() {
 
   useEffect(() => {
     const handleExchange = async () => {
+      if (!supabase) {
+        setStatus('error')
+        setMessage('Configuration error: Supabase client not initialized. Please check your environment variables.')
+        return
+      }
+
       // Magic link flow returns tokens in the hash fragment.
       const { access_token, refresh_token, raw } = parseHashTokens()
       if (!access_token || !refresh_token) {
