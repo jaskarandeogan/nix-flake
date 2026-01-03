@@ -1,7 +1,7 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY
 
 // Check for missing environment variables
 const missingVars: string[] = []
@@ -9,7 +9,7 @@ if (!supabaseUrl || supabaseUrl === 'your-project-url' || supabaseUrl.includes('
   missingVars.push('VITE_SUPABASE_URL')
 }
 if (!supabaseAnonKey || supabaseAnonKey === 'your-anon-key' || supabaseAnonKey.includes('your-anon') || supabaseAnonKey.trim() === '') {
-  missingVars.push('VITE_SUPABASE_ANON_KEY')
+  missingVars.push('VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY')
 }
 
 // Check ConsentKeys environment variables

@@ -139,11 +139,11 @@ The `setup-frontend` command creates a `.env.example` file. Create a `.env` file
 ```bash
 # Supabase (for Vite/React, use VITE_ prefix)
 VITE_SUPABASE_URL=your-project-url
-VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY=your-anon-key
 
 # For Next.js, use NEXT_PUBLIC_ prefix instead
 # NEXT_PUBLIC_SUPABASE_URL=your-project-url
-# NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+# NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=your-anon-key
 
 # Vercel (optional)
 VERCEL_PROJECT_ID=your-project-id

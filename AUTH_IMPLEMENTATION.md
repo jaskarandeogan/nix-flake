@@ -67,7 +67,7 @@ Create a `.env.local` file (copy from `env.example`):
 
 ```env
 VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY=your-anon-key
 VITE_CONSENT_KEYS_AUTHORIZE_URL=https://api.pseudoidc.consentkeys.com/auth
 VITE_CONSENT_KEYS_CLIENT_ID=your-client-id
 VITE_CONSENT_KEYS_REDIRECT_URI=https://your-project.supabase.co/functions/v1/consentkeys-callback
@@ -81,7 +81,7 @@ VITE_CONSENT_KEYS_REDIRECT_URI=https://your-project.supabase.co/functions/v1/con
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY
 
 export const supabase = createClient(supabaseUrl ?? '', supabaseAnonKey ?? '')
 ```
@@ -298,7 +298,7 @@ Or use Supabase Dashboard to deploy.
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `VITE_SUPABASE_URL` | Supabase project URL | `https://xxx.supabase.co` |
-| `VITE_SUPABASE_ANON_KEY` | Supabase anonymous key | `eyJ...` |
+| `VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY` | Supabase anonymous key | `eyJ...` |
 | `VITE_CONSENT_KEYS_AUTHORIZE_URL` | ConsentKeys auth endpoint | `https://api.pseudoidc.consentkeys.com/auth` |
 | `VITE_CONSENT_KEYS_CLIENT_ID` | OAuth client ID | `ck_...` |
 | `VITE_CONSENT_KEYS_REDIRECT_URI` | Edge function callback URL | `https://xxx.supabase.co/functions/v1/consentkeys-callback` |

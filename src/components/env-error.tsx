@@ -66,7 +66,7 @@ export function EnvError({ missingVars }: EnvErrorProps) {
                 {missingVars.some(v => v.includes('SUPABASE')) && (
                   <>
                     <li style={{ marginBottom: '0.5rem' }}>Get <code>VITE_SUPABASE_URL</code> from: <a href="https://supabase.com/dashboard" target="_blank" rel="noopener noreferrer" style={{ color: '#0066cc' }}>Supabase Dashboard</a> → Your Project → Settings → API</li>
-                    <li style={{ marginBottom: '0.5rem' }}>Get <code>VITE_SUPABASE_ANON_KEY</code> from the same location</li>
+                    <li style={{ marginBottom: '0.5rem' }}>Get <code>VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY</code> from the same location</li>
                   </>
                 )}
                 {missingVars.some(v => v.includes('CONSENT_KEYS')) && (

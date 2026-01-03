@@ -198,7 +198,7 @@ if [ ! -f ".env.example" ]; then
     cat > .env.example << EOF
 # Supabase
 ${ENV_PREFIX}SUPABASE_URL=your-project-url
-${ENV_PREFIX}SUPABASE_ANON_KEY=your-anon-key
+${ENV_PREFIX}SUPABASE_PUBLISHABLE_DEFAULT_KEY=your-anon-key
 
 # Vercel (optional)
 VERCEL_PROJECT_ID=your-project-id
@@ -213,7 +213,7 @@ elif [ "$FRAMEWORK_CHOICE" = "1" ]; then
 
 # Supabase
 ${ENV_PREFIX}SUPABASE_URL=your-project-url
-${ENV_PREFIX}SUPABASE_ANON_KEY=your-anon-key
+${ENV_PREFIX}SUPABASE_PUBLISHABLE_DEFAULT_KEY=your-anon-key
 EOF
     fi
 fi
