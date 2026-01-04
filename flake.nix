@@ -13,7 +13,7 @@
       in
       {
         devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
+          packages = with pkgs; [
             # Core CLIs
             supabase-cli
             nodePackages.vercel
@@ -21,13 +21,10 @@
             
             # Supporting tools
             nodejs_20
+            yarn
             git
             jq
             curl
-            
-            # macOS-specific (if needed)
-          ] ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
-            pkgs.darwin.apple_sdk.frameworks.Security
           ];
 
           shellHook = ''
@@ -53,7 +50,7 @@
               echo -e "''${YELLOW}📋 First-time setup detected!''${NC}"
               echo ""
               
-              read -p "Run interactive setup for Supabase, Vercel, and GitHub? (Y/n): " RUN_SETUP
+              read -p "Run interactive setup for Supabase, Vercel, GitHub, and Frontend? (Y/n): " RUN_SETUP
               RUN_SETUP=''${RUN_SETUP:-Y}
               
               if [[ $RUN_SETUP =~ ^[Yy]$ ]]; then
@@ -64,6 +61,22 @@
                 bash ${./setup-scripts/vercel-init.sh}
                 echo ""
                 bash ${./setup-scripts/github-init.sh}
+                echo ""
+                # Frontend code already exists in this repo, so setup is optional
+                bash ${./setup-scripts/frontend-init.sh}
+                
+                # Install dependencies if package.json exists
+                if [ -f "package.json" ]; then
+                  echo ""
+                  echo -e "''${YELLOW}📦 Installing project dependencies...''${NC}"
+                  if command -v yarn &> /dev/null; then
+                    yarn install
+                  elif command -v npm &> /dev/null; then
+                    npm install
+                  else
+                    echo -e "''${RED}⚠️  No package manager found. Install yarn or npm.''${NC}"
+                  fi
+                fi
                 
                 # Mark as initialized
                 touch "$FIRST_TIME_FILE"
@@ -95,12 +108,21 @@
               bash ${./setup-scripts/github-init.sh}
             }
 
-            export -f setup-all setup-supabase setup-vercel setup-github
+            setup-frontend() {
+              bash ${./setup-scripts/frontend-init.sh}
+            }
+
+            verify-edge-function() {
+              bash ${./scripts/verify-edge-function.sh}
+            }
+
+            export -f setup-all setup-supabase setup-vercel setup-github setup-frontend verify-edge-function
 
             # Convenient aliases
             alias supabase-dev="supabase start"
             alias supabase-stop="supabase stop"
             alias deploy="vercel --prod"
+            alias dev="yarn dev"
 
             echo ""
             echo -e "''${BLUE}📦 Available commands:''${NC}"
@@ -108,10 +130,13 @@
             echo "  setup-supabase   : Run Supabase setup only"
             echo "  setup-vercel     : Run Vercel setup only"
             echo "  setup-github     : Run GitHub setup only"
+            echo "  setup-frontend   : Initialize frontend project"
+            echo "  verify-edge-function : Verify edge function structure"
             echo ""
             echo "  supabase-dev     : Start local Supabase"
             echo "  supabase-stop    : Stop local Supabase"
-            echo "  vercel dev       : Start Vercel dev server"
+            echo "  dev              : Start Vite dev server (recommended for local)"
+            echo "  vercel dev       : Start Vercel dev server (for Vercel features)"
             echo "  deploy           : Deploy to Vercel production"
             echo ""
             echo -e "''${GREEN}💡 Tip: Your environment is reproducible. Share this flake!''${NC}"

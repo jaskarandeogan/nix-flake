@@ -1,0 +1,10 @@
+{
+  "buildCommand": "yarn build",
+  "devCommand": "yarn dev",
+  "installCommand": "yarn install",
+  "framework": "vite",
+  "dev": {
+    "port": 5173
+  }
+}
+

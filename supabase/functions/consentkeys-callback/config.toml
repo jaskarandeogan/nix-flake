@@ -1,0 +1,9 @@
+# Edge Function Configuration for ConsentKeys Callback
+# This function handles OAuth callback from ConsentKeys provider
+
+[functions.consentkeys-callback]
+verify_jwt = false
+
+# Note: verify_jwt = false is required because ConsentKeys doesn't send JWT tokens
+# The function handles its own authentication via OAuth flow
+
