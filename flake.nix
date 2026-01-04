@@ -116,7 +116,18 @@
               bash ${./scripts/verify-edge-function.sh}
             }
 
-            export -f setup-all setup-supabase setup-vercel setup-github setup-frontend verify-edge-function
+            deploy-edge-function() {
+              if [ -f "supabase/.temp/project-ref" ]; then
+                PROJECT_REF=$(cat supabase/.temp/project-ref)
+                echo "🚀 Deploying ConsentKeys edge function with --no-verify-jwt flag..."
+                supabase functions deploy consentkeys-callback --no-verify-jwt --project-ref "$PROJECT_REF"
+              else
+                echo "❌ No project linked. Run 'supabase link' first or use:"
+                echo "   supabase functions deploy consentkeys-callback --no-verify-jwt --project-ref YOUR_PROJECT_REF"
+              fi
+            }
+
+            export -f setup-all setup-supabase setup-vercel setup-github setup-frontend verify-edge-function deploy-edge-function
 
             # Convenient aliases
             alias supabase-dev="supabase start"
@@ -132,6 +143,7 @@
             echo "  setup-github     : Run GitHub setup only"
             echo "  setup-frontend   : Initialize frontend project"
             echo "  verify-edge-function : Verify edge function structure"
+            echo "  deploy-edge-function : Deploy ConsentKeys edge function (with --no-verify-jwt)"
             echo ""
             echo "  supabase-dev     : Start local Supabase"
             echo "  supabase-stop    : Stop local Supabase"
