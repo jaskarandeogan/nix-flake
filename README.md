@@ -15,7 +15,24 @@ A reproducible development environment using Nix flakes with Supabase, Vercel, a
 
 Before starting, ensure you have:
 
-1. **Nix installed** with flakes enabled
+1. **Git installed** and configured
+   - Installation: https://git-scm.com/downloads
+   - Verify: `git --version` should work
+   - Configure your name and email: `git config --global user.name "Your Name"` and `git config --global user.email "your.email@example.com"`
+
+2. **Supabase account** created beforehand
+   - Sign up at: https://supabase.com
+   - You'll need this to link or create a project during setup
+
+3. **Vercel account** created beforehand
+   - Sign up at: https://vercel.com
+   - You'll need this to link or create a project during setup
+
+4. **GitHub account** created beforehand
+   - Sign up at: https://github.com
+   - You'll need this to link or create a repository during setup
+
+5. **Nix installed** with flakes enabled
    - Installation: https://nixos.org/download.html
    - Verify: `nix --version` should work
    - If `nix` command is not found, add to your `~/.zshrc`:
@@ -28,9 +45,9 @@ Before starting, ensure you have:
      ```
      Then restart your terminal or run `source ~/.zshrc`
 
-2. **macOS, Linux, or NixOS** operating system
+6. **macOS, Linux, or NixOS** operating system
 
-3. **Optional: Docker Desktop** (only needed for local Supabase development)
+7. **Optional: Docker Desktop** (only needed for local Supabase development)
 
 ## Step-by-Step Setup Guide
 
