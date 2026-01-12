@@ -6,6 +6,7 @@ A reproducible development environment using Nix flakes with Supabase, Vercel, a
 
 - [Prerequisites](#prerequisites)
 - [Step-by-Step Setup Guide](#step-by-step-setup-guide)
+  - [Step 0: Create ConsentKeys OAuth Application](#step-0-create-consentkeys-oauth-application)
 - [Environment Variables](#environment-variables)
 - [Edge Function Configuration](#edge-function-configuration)
 - [Available Commands](#available-commands)
@@ -32,7 +33,12 @@ Before starting, ensure you have:
    - Sign up at: https://github.com
    - You'll need this to link or create a repository during setup
 
-5. **Nix installed** with flakes enabled
+5. **ConsentKeys account** and OAuth application created beforehand
+   - Sign up at: https://pseudoidc.consentkeys.com (or your ConsentKeys platform URL)
+   - You'll need to create an OAuth application to get your client ID and secret
+   - See [Step 0: Create ConsentKeys OAuth Application](#step-0-create-consentkeys-oauth-application) below for detailed instructions
+
+6. **Nix installed** with flakes enabled
    - Installation: https://nixos.org/download.html
    - Verify: `nix --version` should work
    - If `nix` command is not found, add to your `~/.zshrc`:
@@ -45,13 +51,157 @@ Before starting, ensure you have:
      ```
      Then restart your terminal or run `source ~/.zshrc`
 
-6. **macOS, Linux, or NixOS** operating system
+7. **macOS, Linux, or NixOS** operating system
 
-7. **Optional: Docker Desktop** (only needed for local Supabase development)
+8. **Optional: Docker Desktop** (only needed for local Supabase development)
 
 ## Step-by-Step Setup Guide
 
 Follow these steps in order to set up your development environment:
+
+### Step 0: Create ConsentKeys OAuth Application
+
+**⚠️ IMPORTANT:** You must create a ConsentKeys OAuth application **before** running the Supabase setup, as you'll need the client ID and client secret during configuration.
+
+#### Prerequisites
+
+- A ConsentKeys account (sign up if you don't have one)
+- Access to the ConsentKeys Developer Portal
+
+#### Step-by-Step Process
+
+1. **Access the ConsentKeys Platform**
+   - Navigate to the ConsentKeys platform in your browser
+   - Log in with your ConsentKeys account credentials
+
+2. **Verify Your Session**
+   - Once authenticated, ensure you're logged in successfully
+   - You should see your dashboard or account page
+
+3. **Access the Developer Portal**
+   - Navigate to the Developer Portal section
+   - This is typically found in account settings or a dedicated "Developers" section
+   - Look for "OAuth Applications" or "Applications" menu
+
+4. **Fill Out the Application Form**
+
+   **Basic Information:**
+   - **Application Name:** Choose a descriptive name (e.g., "My App - Development")
+   - **Description:** Optional description of your application
+   - **Application Type:** Select "OAuth 2.0" or "Web Application"
+
+   **OAuth Configuration:**
+   - **Redirect URI(s):** Add your redirect URI(s)
+     - For local development: `http://localhost:5173/auth/callback`
+     - For production: `https://your-project-id.supabase.co/functions/v1/consentkeys-callback`
+     - **Best Practice:** Add separate redirect URIs for each environment (development, staging, production)
+   - **Scopes:** Select the OAuth scopes your application needs (typically `openid`, `profile`, `email`)
+
+5. **Create the Application**
+   - Review all information for accuracy
+   - Click "Create Application" or "Save" button
+   - Wait for confirmation that the application was created successfully
+
+6. **Save Your Credentials**
+
+   After successful creation, you'll see:
+   - **Client ID:** This will be displayed (starts with `ck_`)
+   - **Client Secret:** This will be shown **ONLY ONCE**
+
+   **⚠️ CRITICAL: Save Your Client Secret Immediately**
+   
+   The client secret will **ONLY be shown once**! You must save it immediately:
+   
+   - Copy the client secret to a secure password manager
+   - Store it in a secure location (not in version control)
+   - If you lose it, you'll need to regenerate it (which may invalidate existing integrations)
+   
+   **Important Security Notes:**
+   - Never commit client secrets to git repositories
+   - Use environment variables or secret management tools
+   - The client secret is used for server-side operations only
+
+7. **Application Status**
+   - Verify the application status is "Active" or "Enabled"
+   - Note your Client ID for use in configuration
+
+#### What You'll Need Later
+
+After creating the application, you'll need these values for configuration:
+
+- **Client ID** (`CONSENT_KEYS_CLIENT_ID` / `VITE_CONSENT_KEYS_CLIENT_ID`)
+  - Format: `ck_xxxxxxxxxxxxx`
+  - Used in both frontend and edge function configuration
+
+- **Client Secret** (`CONSENT_KEYS_CLIENT_SECRET`)
+  - Format: A long random string
+  - Used only in edge function secrets (server-side)
+  - **Never expose this in frontend code**
+
+- **Redirect URI**
+  - Must match exactly what you configured in ConsentKeys
+  - For Supabase edge function: `https://your-project-id.supabase.co/functions/v1/consentkeys-callback`
+  - For local development: `http://localhost:5173/auth/callback`
+
+#### Common Pitfalls and Troubleshooting
+
+**Redirect URL Issues:**
+
+**Problem:** Authentication fails with "redirect_uri_mismatch" error
+
+**Solution:**
+- Ensure the redirect URI in your ConsentKeys application **exactly matches** the one used in your code
+- Check for trailing slashes, `http` vs `https`, and port numbers
+- The redirect URI must be one of the URIs you configured in the ConsentKeys application
+
+**Multiple Environments:**
+
+**Best Practice:** Add separate redirect URLs for each environment:
+- Development: `http://localhost:5173/auth/callback`
+- Staging: `https://staging.yourdomain.com/auth/callback`
+- Production: `https://your-project-id.supabase.co/functions/v1/consentkeys-callback`
+
+**Lost Client Secret:**
+
+**Problem:** You forgot to save the client secret
+
+**Solution:**
+- Check if you saved it in a password manager or secure notes
+- If lost, you may need to regenerate it in the ConsentKeys Developer Portal
+- Regenerating may invalidate existing integrations, so update all configurations
+
+#### Integration Checklist
+
+Before proceeding to Supabase setup, verify:
+
+- ✅ ConsentKeys OAuth application created
+- ✅ Client ID saved and accessible
+- ✅ Client Secret saved securely (not in git)
+- ✅ Redirect URI configured correctly
+- ✅ Application status is "Active"
+- ✅ You have the ConsentKeys API endpoints:
+  - Authorization URL: `https://api.pseudoidc.consentkeys.com/auth`
+  - Token URL: `https://api.pseudoidc.consentkeys.com/token`
+  - UserInfo URL: `https://api.pseudoidc.consentkeys.com/userinfo`
+
+#### API Configuration and Endpoints
+
+ConsentKeys provides an OpenID Connect discovery endpoint that contains all the API endpoints and configuration your application needs:
+
+**OpenID Configuration URL:**
+```
+https://api.pseudoidc.consentkeys.com/.well-known/openid-configuration
+```
+
+This endpoint returns a JSON document with:
+- Authorization endpoint
+- Token endpoint
+- UserInfo endpoint
+- Supported scopes
+- Supported response types
+- And other OAuth/OIDC configuration
+
+**Reference:** For detailed API documentation, refer to the [ConsentKeys OAuth Application Setup Guide](https://doc.clickup.com/90132503056/d/h/2ky51pgg-2693/4fa372dec4eb9b6)
 
 ### Step 1: Clone and Enter the Repository
 
@@ -83,6 +233,8 @@ Type `Y` and press Enter to proceed with automated setup.
 
 #### 2a. Supabase Setup (`setup-supabase`)
 
+**⚠️ Prerequisite:** Make sure you've completed [Step 0: Create ConsentKeys OAuth Application](#step-0-create-consentkeys-oauth-application) first, as you'll need your Client ID and Client Secret during this setup.
+
 1. **Authentication:**
    - If not logged in, you'll be prompted to authenticate
    - This opens your browser for Supabase login
@@ -105,8 +257,8 @@ Type `Y` and press Enter to proceed with automated setup.
    - Required secrets:
      - `CONSENT_KEYS_TOKEN_URL` (default: `https://api.pseudoidc.consentkeys.com/token`)
      - `CONSENT_KEYS_USERINFO_URL` (default: `https://api.pseudoidc.consentkeys.com/userinfo`)
-     - `CONSENT_KEYS_CLIENT_ID` (your ConsentKeys client ID)
-     - `CONSENT_KEYS_CLIENT_SECRET` (your ConsentKeys client secret)
+     - `CONSENT_KEYS_CLIENT_ID` (your ConsentKeys client ID from Step 0)
+     - `CONSENT_KEYS_CLIENT_SECRET` (your ConsentKeys client secret from Step 0)
      - `APP_URL` (default: `http://localhost:5173/auth/callback`)
    - **Note:** `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are automatically available and don't need to be set
 
