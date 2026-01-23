@@ -66,7 +66,7 @@ Follow these steps in order to set up your development environment:
 #### Prerequisites
 
 - A ConsentKeys account (sign up if you don't have one)
-- Access to the ConsentKeys /Developer Portal
+- Access to the ConsentKeys /Developer Portal from the dashboard
 
 #### Step-by-Step Process
 
