@@ -188,18 +188,24 @@ if [ -f "supabase/.temp/project-ref" ]; then
             fi
         fi
         
-        # Ask about deploying the function
-        read -p "Deploy ConsentKeys edge function now? (y/N): " DEPLOY_FUNC
+        # Ask about deploying the function (default to yes for better UX)
+        read -p "Deploy ConsentKeys edge function now? (Y/n): " DEPLOY_FUNC
+        DEPLOY_FUNC=${DEPLOY_FUNC:-Y}
         if [[ $DEPLOY_FUNC =~ ^[Yy]$ ]]; then
             echo ""
-            echo "🚀 Deploying edge function..."
-            supabase functions deploy consentkeys-callback --project-ref "$PROJECT_REF"
+            echo "🚀 Deploying edge function with --no-verify-jwt flag..."
+            echo "   (JWT verification disabled - required for ConsentKeys OAuth flow)"
+            supabase functions deploy consentkeys-callback --no-verify-jwt --project-ref "$PROJECT_REF"
             if [ $? -eq 0 ]; then
                 echo "✅ Edge function deployed successfully!"
+                echo "   JWT verification is disabled for this function"
             else
                 echo "⚠️  Deployment failed. You can deploy manually with:"
-                echo "   supabase functions deploy consentkeys-callback"
+                echo "   supabase functions deploy consentkeys-callback --no-verify-jwt --project-ref $PROJECT_REF"
             fi
+        else
+            echo "💡 To deploy later, run:"
+            echo "   supabase functions deploy consentkeys-callback --no-verify-jwt --project-ref $PROJECT_REF"
         fi
     fi
 fi
@@ -213,6 +219,7 @@ echo "  • Run 'supabase start' to start local database (requires Docker)"
 echo "  • Run 'supabase status' to see local credentials"
 if [ -f "supabase/.temp/project-ref" ]; then
     PROJECT_REF=$(cat supabase/.temp/project-ref)
+    echo "  • Deploy edge function: supabase functions deploy consentkeys-callback --no-verify-jwt --project-ref $PROJECT_REF"
     echo "  • Manage edge functions: https://supabase.com/dashboard/project/$PROJECT_REF/functions"
     echo "  • Set secrets: https://supabase.com/dashboard/project/$PROJECT_REF/settings/functions"
 fi
